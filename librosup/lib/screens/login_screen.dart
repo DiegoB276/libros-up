@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:librosup/screens/home_screen.dart';
+import 'package:librosup/screens/register_screen.dart';
+import 'package:librosup/service/api.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,9 +14,14 @@ class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController emailController;
   late TextEditingController passwordController;
 
+
+  void getDataBooks() async{
+    await APIService.getBooks();
+  }
   @override
   void initState() {
     super.initState();
+    getDataBooks();
     emailController = TextEditingController();
     passwordController = TextEditingController();
   }
@@ -112,7 +119,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 15),
                 MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterScreen(),
+                      ),
+                    );
+                  },
                   color: const Color.fromARGB(255, 29, 124, 32),
                   minWidth: double.infinity,
                   shape: RoundedRectangleBorder(
