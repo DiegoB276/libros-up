@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:librosup/screens/home_screen.dart';
+import 'package:librosup/screens/bottom_navigation_screen.dart';
 import 'package:librosup/screens/register_screen.dart';
 import 'package:librosup/service/api.dart';
 
@@ -13,15 +13,23 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController emailController;
   late TextEditingController passwordController;
+  bool isLoading = false;
 
-
-  void getDataBooks() async{
-    await APIService.getBooks();
+  void loading() {
+    setState(() {
+      isLoading = true;
+    });
   }
+
+  void noLoading() {
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    getDataBooks();
     emailController = TextEditingController();
     passwordController = TextEditingController();
   }
@@ -94,12 +102,36 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 35),
                 //Buttons
+
+                isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : const SizedBox(height: 10),
+                const SizedBox(height: 10),
                 MaterialButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
+                  onPressed: () async {
+                    loading();
+                    Map res = {
+                      "username": emailController.text,
+                      "password": passwordController.text,
+                    };
+                    if (await APIService.iniciarSesion(res) == 0) {
+                      noLoading();
+                      Navigator.pushReplacement(
+                        // ignore: use_build_context_synchronously
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BottomNavigationScreen(),
+                        ),
+                      );
+                      return;
+                    }
+                    noLoading();
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Credenciales Incorrectas"),
                       ),
                     );
                   },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:librosup/screens/filter_books_category.dart';
 import 'package:librosup/service/api.dart';
 
 import 'details_screen.dart';
@@ -13,9 +14,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late TextEditingController searchController;
   List<Map> filters = [
-    {"gen": "Terror", "key": "te", "status": true},
-    {"gen": "Ciencia Ficción", "key": "cf", "status": false},
-    {"gen": "Más Descargados", "key": "md", "status": false},
+    {"gen": "Deportes", "key": "te", "status": true},
+    {"gen": "Comedia", "key": "com", "status": false},
+    {"gen": "Automoviles", "key": "cf", "status": false},
+    {"gen": "Historia", "key": "his", "status": false},
   ];
 
   void changeStatusFilterItem(int index) {
@@ -29,16 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void getData() async {
-    final data = await APIService.getData();
-    print(data);
-  }
-
   @override
   void initState() {
     super.initState();
     searchController = TextEditingController();
-    getData();
   }
 
   @override
@@ -54,70 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        toolbarHeight: 80,
-        title: TextField(
-          controller: searchController,
-          decoration: InputDecoration(
-            hintText: "Buscar Libros",
-            border: InputBorder.none,
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Color(0xffB4B4B4), width: 2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Color(0xffB4B4B4), width: 2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        /*Column(
-          children: [
-            TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                hintText: "Buscar Libros",
-                border: InputBorder.none,
-                enabledBorder: OutlineInputBorder(
-                  borderSide:
-                      const BorderSide(color: Color(0xffB4B4B4), width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      const BorderSide(color: Color(0xffB4B4B4), width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              height: 40,
-              child: ListView.builder(
-                itemCount: filters.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                    child: MaterialButton(
-                      onPressed: () => changeStatusFilterItem(index),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      textColor: Colors.white,
-                      color: filters[index]["status"]
-                          ? Colors.brown
-                          : Colors.orange,
-                      child: Text(
-                        filters[index]["gen"],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),*/
+        title: const Text("Todos los Libros"),
       ),
       body: FutureBuilder(
         future: APIService.getData(),
@@ -132,45 +65,111 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text("No Hay Datos"),
             );
           }
-          return GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-            ),
-            itemCount: snapshot.data!.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DetailsScreen(
-                                  book: snapshot.data![index],
-                                )),
-                      );
-                    },
-                    child: Image.network(
-                      snapshot.data![index]["volumeInfo"]["imageLinks"]
-                          ["smallThumbnail"] ?? "https://c1.tablecdn.com/pa/google-books-api.jpg",
-                      width: 120,
-                      height: 120,
-                    ),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 40,
+                width: double.infinity,
+                //color: Colors.grey.shade100,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: filters.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 7),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FilterBooksCategory(
+                                category: filters[index]['gen'],
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Center(
+                            child: Text(
+                              filters[index]['gen'],
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              
+              const SizedBox(height: 10),
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      snapshot.data![index]["volumeInfo"]["title"],
-                      style: const TextStyle(
-                          fontSize: 17, fontWeight: FontWeight.w600),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.fade,
-                    ),
-                  )
-                ],
-              );
-            },
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailsScreen(
+                                  book: snapshot.data![index],
+                                ),
+                              ),
+                            );
+                          },
+                          child: Image.network(
+                            (snapshot.data![index]["volumeInfo"]?["imageLinks"]
+                                            ?["smallThumbnail"] !=
+                                        null &&
+                                    snapshot
+                                        .data![index]["volumeInfo"]
+                                            ?["imageLinks"]?["smallThumbnail"]
+                                        .isNotEmpty)
+                                ? snapshot.data![index]["volumeInfo"]
+                                    ["imageLinks"]["smallThumbnail"]
+                                : "https://c1.tablecdn.com/pa/google-books-api.jpg",
+                            width: 120,
+                            height: 120,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                'assets/images/placeholder.png', // Imagen local de respaldo
+                                width: 120,
+                                height: 120,
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            snapshot.data![index]["volumeInfo"]["title"],
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.fade,
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         },
       ),

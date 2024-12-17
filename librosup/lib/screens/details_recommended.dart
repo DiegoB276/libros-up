@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class DetailsScreen extends StatefulWidget {
-  const DetailsScreen({
+class DetailsRecommended extends StatefulWidget {
+  const DetailsRecommended({
     super.key,
     required this.book,
   });
@@ -9,10 +9,10 @@ class DetailsScreen extends StatefulWidget {
   final Map book;
 
   @override
-  State<DetailsScreen> createState() => _DetailsScreenState();
+  State<DetailsRecommended> createState() => _DetailsRecommendedState();
 }
 
-class _DetailsScreenState extends State<DetailsScreen> {
+class _DetailsRecommendedState extends State<DetailsRecommended> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,12 +33,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 children: [
                   Center(
                     child: Image.network(
-                      widget.book["volumeInfo"]?["imageLinks"]?["thumbnail"] !=
+                      widget.book["thumbnail"] !=
                                   null &&
                               widget
-                                  .book["volumeInfo"]["imageLinks"]["thumbnail"]
+                                  .book["thumbnail"]
                                   .isNotEmpty
-                          ? widget.book["volumeInfo"]["imageLinks"]["thumbnail"]
+                          ? widget.book["thumbnail"]
                           : "https://c1.tablecdn.com/pa/google-books-api.jpg",
                       width: 150,
                       height: 300,
@@ -59,7 +59,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           ),
                         ),
                         Text(
-                          widget.book["volumeInfo"]["title"],
+                          widget.book["title"],
                           maxLines: 2,
                           style: const TextStyle(
                             fontSize: 13,
@@ -75,10 +75,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           ),
                         ),
                         Text(
-                          (widget.book["volumeInfo"]["categories"] != null &&
-                                  widget.book["volumeInfo"]["categories"]
+                          (widget.book["categories"] != null &&
+                                  widget.book["categories"]
                                       .isNotEmpty)
-                              ? widget.book["volumeInfo"]["categories"][0]
+                              ? widget.book["categories"][0]
                               : "any",
                           maxLines: 2,
                           style: const TextStyle(
@@ -96,12 +96,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         ),
                         Text(
                           (widget.book != null &&
-                                  widget.book["volumeInfo"] != null &&
-                                  widget.book["volumeInfo"]["authors"] !=
+                                  
+                                  widget.book["authors"] !=
                                       null &&
                                   widget
-                                      .book["volumeInfo"]["authors"].isNotEmpty)
-                              ? widget.book["volumeInfo"]["authors"][0]
+                                      .book["authors"].isNotEmpty)
+                              ? widget.book["authors"][0]
                               : "Desconocido",
                           maxLines: 2,
                           style: const TextStyle(
@@ -124,7 +124,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ),
               ),
               Text(
-                ("Total depáginas: ${widget.book["volumeInfo"]["pageCount"]}"),
+                ("Total depáginas: ${widget.book["page_count"]}"),
               ),
               const SizedBox(height: 15),
               const Text(
@@ -135,17 +135,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ),
               ),
               Text(
-                widget.book["volumeInfo"]["description"] ??
+                widget.book["description"] ??
                     "No se ha proporcionado una descripción al libro.",
               ),
               const SizedBox(height: 10),
               Center(
                 child: Image.network(
-                  widget.book["volumeInfo"]?["imageLinks"]?["thumbnail"] !=
+                  widget.book["thumbnail"] !=
                               null &&
-                          widget.book["volumeInfo"]["imageLinks"]["thumbnail"]
+                          widget.book["thumbnail"]
                               .isNotEmpty
-                      ? widget.book["volumeInfo"]["imageLinks"]["thumbnail"]
+                      ? widget.book["thumbnail"]
                       : "https://c1.tablecdn.com/pa/google-books-api.jpg",
                   width: 150,
                   height: 300,

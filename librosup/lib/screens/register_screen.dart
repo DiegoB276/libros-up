@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:librosup/screens/login_screen.dart';
 import 'package:librosup/service/api.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -154,7 +155,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 15),
                 MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
+                  },
                   color: const Color.fromARGB(255, 0, 0, 0),
                   minWidth: double.infinity,
                   shape: RoundedRectangleBorder(
